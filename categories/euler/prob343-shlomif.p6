@@ -29,11 +29,11 @@ Based on prob003-lanny.pl by Lanny Ripple .
 
 =end pod
 
-my Int sub factor(Int $n is copy) {
+my int sub factor(int $n is copy) {
     # Can never happen in our case:
     # if n == 1:
     #    return []
-    my Int $r;
+    my int $r;
     my Bool $f = False;
     while ( ($n +& 1) == 0)
     {
@@ -44,8 +44,8 @@ my Int sub factor(Int $n is copy) {
     {
         $r = 2;
     }
-    my Int $l = $n.sqrt.Int;
-    my Int $d = 3;
+    my int $l = $n.sqrt.Int;
+    my int $d = 3;
     while ($d <= $l)
     {
         $f = False;
@@ -69,7 +69,7 @@ sub MAIN($n?) {
 
     my Int $s = 1;
     # for 2 .. 20_000 -> Int $k {
-    for 2 .. 2_000_000 -> Int $k {
+    for 2 .. 2_000_000 -> int $k {
         $s += max map { factor($_) }, $k+1, ($k*$k-$k+1);
         say "$k : $s" if $k % 1_000 == 0;
     }
