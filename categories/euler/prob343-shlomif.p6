@@ -29,39 +29,34 @@ Based on prob003-lanny.pl by Lanny Ripple .
 
 =end pod
 
-my int sub factor(int $n is copy) {
+my %C = (1 => 1);
+my int sub factor(int $n is copy, int $dd is copy) {
     # Can never happen in our case:
     # if n == 1:
     #    return []
-    my int $r;
     my Bool $f = False;
     while ( ($n +& 1) == 0)
     {
         $f = True;
         $n +>= 1;
     }
-    if ($f)
+    if ($f and $n == 1)
     {
-        $r = 2;
+        return 2;
     }
-    my int $l = $n.sqrt.Int;
-    my int $d = 3;
-    while ($d <= $l)
-    {
-        $f = False;
-        while ($n % $d == 0)
+    return %C{$n} //= sub {
+        my int $l = $n.sqrt.Int;
+        my int $d = $dd;
+        while ($d <= $l)
         {
-            $n div= $d;
-            $f = True;
+            if ($n % $d == 0)
+            {
+                return factor($n div $d, $d);
+            }
+            $d += 2;
         }
-        if $f
-        {
-            $r = $d;
-            $l = $n.sqrt.Int;
-        }
-        $d += 2;
-    }
-    return $n > 1 ?? $n !! $r;
+        $n > 1 ?? $n !! $d
+    }.();
 }
 
 sub MAIN($n?) {
@@ -70,7 +65,7 @@ sub MAIN($n?) {
     my Int $s = 1;
     # for 2 .. 20_000 -> Int $k {
     for 2 .. 2_000_000 -> int $k {
-        $s += max map { factor($_) }, $k+1, ($k*$k-$k+1);
+        $s += max map { factor($_, 3) }, $k+1, ($k*$k-$k+1);
         say "$k : $s" if $k % 1_000 == 0;
     }
     say "Result = $s"
